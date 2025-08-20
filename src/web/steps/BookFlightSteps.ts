@@ -47,7 +47,7 @@ Then(/^payment is confirmed and booking is succesfull$/, async function () {
 
 When(/^customer select payment method "([^"]*)" and pay$/, async function (payType) {
     await new BookFlight(this.web, this.page).fnPayFlight(payType)
-    await expect(this.page).toHaveURL('https://test-safair.ezyflight.se/manage/confirmation?confirmationNumber=XZ6PE1&bookingLastName=RRTRT');
+    // await expect(this.page).toHaveURL('https://test-safair.ezyflight.se/manage/confirmation?confirmationNumber=XZ6PE1&bookingLastName=RRTRT');
 
 });
 

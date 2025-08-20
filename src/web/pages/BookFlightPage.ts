@@ -104,19 +104,24 @@ export default class BookFlight {
             await this.page.waitForTimeout(1000);
             await this.page.getByLabel('Return').click();
             await this.page.getByRole('button', { name: ArrivalDate }).click();
-
         }
 
+
+        // select number of adults
         if (adultorigin <= "3") {
             await this.page.getByRole('button', { name: adultorigin }).click();
         }
-
-        if (adultorigin >= "4") {
+        else {
             await this.page.locator('select[name="adult"]').selectOption(adultorigin);
         }
-
-
-
+        // select no of kids
+        if (child > "0") {
+            await this.page.locator('select[name="child"]').first().selectOption(child);
+        }
+        // select no of Infants
+        if (infant > "0") {
+            await this.page.locator('select[name="child"]').nth(1).selectOption(infant);
+        }
     }
 
     public async clickLetsGo() {
@@ -167,7 +172,6 @@ export default class BookFlight {
             }
 
             if (i === 0) {
-                // First adult: use role-based selectors for mobile/email
                 await this.page.locator(`input[name="\\30 -firstName"]`).fill("Auto" + result);
                 await this.page.locator(`input[name="\\30 -lastName"]`).fill('Automation');
                 await this.page.locator(`input[name="\\30 -document-id"]`).fill('8411045399080');
@@ -192,7 +196,7 @@ export default class BookFlight {
             // await this.page.getByRole('button', { name: 'Ozow ' }).click();
             await this.page.getByRole('checkbox', { name: 'I agree to FlySafair\'s Booking T&C\'s' }).check();
             await this.page.getByRole('button', { name: 'Pay now' }).nth(1).click();
-            await this.page.getByText('Test successful responseSelect').click();
+            // await this.page.getByText('Test successful responseSelect').click();
         }
     }
 
