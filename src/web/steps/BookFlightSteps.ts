@@ -48,12 +48,16 @@ Then(/^payment is confirmed and booking is succesfull$/, async function () {
 When(/^customer select payment method "([^"]*)" and pay$/, async function (payType) {
     await new BookFlight(this.web, this.page).fnPayFlight(payType)
     // await expect(this.page).toHaveURL('https://test-safair.ezyflight.se/manage/confirmation?confirmationNumber=XZ6PE1&bookingLastName=RRTRT');
-
 });
 
-Then(/^Verify if user is unable to add infants that are more than number of adults <"([^"]*)">, <"([^"]*)">$/, async function (Adult, infant) {
+When(/^a user select number of infants and adults "([^"]*)", "([^"]*)"$/, async function (Adult, infant) {
+    await new BookFlight(this.web, this.page).assertAdultsAndInfants(Adult, infant)
+});
+
+Then(/^Verify if user is unable to add infants that are more than number of adults "([^"]*)", "([^"]*)"$/, async function (Adult, infant) {
     await new BookFlight(this.web, this.page).verifyAdultInfantChecks(Adult, infant)
 });
+
 
 
 

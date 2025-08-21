@@ -130,6 +130,21 @@ export default class BookFlight {
         }
     }
 
+
+    public async assertAdultsAndInfants(adult: string, infants: string) {
+        if (adult <= "3") {
+            await this.page.getByRole('button', { name: adult }).click();
+        }
+        else {
+            await this.page.locator('select[name="adult"]').selectOption(adult);
+        }
+
+        if (infants > "0") {
+            await this.page.locator('select[name="child"]').nth(1).selectOption(infants);
+        }
+    }
+
+
     public async verifyAdultInfantChecks(adultNo: string, infantNumber: string) {
 
         if (infantNumber > "0") {
@@ -174,6 +189,7 @@ export default class BookFlight {
     }
 
     public async fnClickContinue() {
+        await this.page.waitForTimeout(2000);
         await this.clickContinue.click();
     }
 
