@@ -1,3 +1,4 @@
+import { Console } from "console";
 import UIActions from "../../support/playwright/actions/UIActions";
 import Assert from "../../support/playwright/asserts/Assert";
 import StringUtil from "../../support/utils/StringUtil";
@@ -119,8 +120,23 @@ export default class BookFlight {
             await this.page.locator('select[name="child"]').first().selectOption(child);
         }
         // select no of Infants
-        if (infant > "0") {
-            await this.page.locator('select[name="child"]').nth(1).selectOption(infant);
+        if (adultorigin > infant) {
+            if (infant > "0") {
+                await this.page.locator('select[name="child"]').nth(1).selectOption(infant);
+            }
+        }
+        else {
+            console.log("Fail: Only 1 infant per adult")
+        }
+    }
+
+    public async verifyAdultInfantChecks(adultNo: string, infantNumber: string) {
+
+        if (infantNumber > "0") {
+            await expect(this.page.getByText('Only 1 infant per adult')).toHaveCount(1);
+        }
+        else {
+            console.log("Fail: Only 1 infant per adult is suppose to be displayed since infants number is greater than adults")
         }
     }
 

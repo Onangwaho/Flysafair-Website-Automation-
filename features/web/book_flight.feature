@@ -4,7 +4,7 @@ Feature: FLYSAFAIR FLIGHT BOOKINGS
     Background:
         Given user is at home page
     @regression
-    @sanity @uat
+    @sanity @uat @fly
     Scenario Outline: book a flight
         Given user select trip type "One-way"
         When the users enters the details "<origin>", "<destination>", "<depatureDate>","<returnDate>", "<noAdults>", "<noChild>", "<infant>", "<classType>", "<email>", "One-way"
@@ -23,3 +23,14 @@ Feature: FLYSAFAIR FLIGHT BOOKINGS
         Examples:
             | origin       | destination | depatureDate             | returnDate             | noAdults | noChild | infant | classType | email                      | paymentMethod |
             | Johannesburg | Cape Town   | Thursday, 21 August 2025 | Friday, 22 August 2025 | 1        | 0       | 0      | Lite      | tmahwasane@flysafair.co.za | ozow          |
+
+    @bookingInfant
+    Scenario Outline: Verify user is unable to add infants that are more than number of adults
+        Given user is at home page
+        Given user select trip type "One-way"
+        When the users enters the details "<origin>", "<destination>", "<depatureDate>","<returnDate>", "<noAdults>", "<noChild>", "<infant>", "<classType>", "<email>", "One-way"
+        Then click button "Lets Go"
+        Then Verify if user is unable to add infants that are more than number of adults <"noAdults ">, <"infant">
+        Examples:
+            | origin       | destination | depatureDate             | returnDate             | noAdults | noChild | infant | classType | email                      | paymentMethod |
+            | Johannesburg | Cape Town   | Thursday, 21 August 2025 | Friday, 22 August 2025 | 1        | 0       | 3      | Lite      | tmahwasane@flysafair.co.za | ozow          |

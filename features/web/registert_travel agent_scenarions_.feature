@@ -1,4 +1,4 @@
-@register @fly1
+@register
 Feature: FLYSAFAIR FLIGHT BOOKINGS
 
     Background:

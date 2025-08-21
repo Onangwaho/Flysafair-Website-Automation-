@@ -51,6 +51,9 @@ When(/^customer select payment method "([^"]*)" and pay$/, async function (payTy
 
 });
 
+Then(/^Verify if user is unable to add infants that are more than number of adults <"([^"]*)">, <"([^"]*)">$/, async function (Adult, infant) {
+    await new BookFlight(this.web, this.page).verifyAdultInfantChecks(Adult, infant)
+});
 
 
 
