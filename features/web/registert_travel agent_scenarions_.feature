@@ -1,4 +1,4 @@
-@register @fly
+@register @fly1
 Feature: FLYSAFAIR FLIGHT BOOKINGS
 
     Background:
@@ -14,7 +14,7 @@ Feature: FLYSAFAIR FLIGHT BOOKINGS
         When capture passangers details "<noAdults>", "<noChild>", "<infant>"
         Then clicks button "Continue"
         Then clicks button "Continue"
-        Then clicks button "Clear"
+        Then clicks button "Continue"
         # Then clicks button "Continue"
         Then customer clicks "NO CAR, THANKS"
         When customer selects travel protection "No"
