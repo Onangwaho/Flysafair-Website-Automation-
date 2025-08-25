@@ -4,6 +4,7 @@ import Assert from "../../support/playwright/asserts/Assert";
 import StringUtil from "../../support/utils/StringUtil";
 import Constants from "../constants/Constants";
 import { Page, Locator, FrameLocator, expect } from "@playwright/test";
+import * as fs from "fs";
 
 export default class BookFlight {
     readonly iframe: FrameLocator;
@@ -38,7 +39,7 @@ export default class BookFlight {
         this.iframe = page.frameLocator('[id^="_hjSafeContext_"]');
 
         this.btnLetsGo = this.page.getByRole('button', { name: 'Let\'s go' });
-        this.selectPrices = this.page.locator('xpath=/html/body/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/div[1]/div/div[3]/div/div[2]/div/div[5]/div[1]/div[2]/button');
+        this.selectPrices = this.page.locator('xpath=/html/body/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div[5]/div[1]/div[2]/button');
         this.selectLite = this.iframe.locator("//div[starts-with(@id, '__BVID__')]/div/div[1]/div/div[1]")
 
         this.businessClass = this.page.locator("//*[contains(@id, '__BVID__')]/div/div[1]/div/div[4]")
@@ -262,24 +263,70 @@ export default class BookFlight {
         }
     }
 
-
-
     public async fnPayFlight(pay: string) {
+        switch (pay.toLowerCase()) {
+            case "ozow":
+                await this.ozowPayment.click();
+                break;
 
-        if (pay == "ozow") {
-            await this.ozowPayment.click();
-            // await this.page.getByRole('button', { name: 'Ozow ' }).click();
-            await this.page.getByRole('checkbox', { name: 'I agree to FlySafair\'s Booking T&C\'s' }).check();
-            await this.page.getByRole('button', { name: 'Pay now' }).nth(1).click();
-            // await this.page.getByText('Test successful responseSelect').click();
+            case "paylater":
+                await this.page.getByRole('button', { name: 'PayLater ' }).click();
+                break;
+
+            default:
+                throw new Error(`Unsupported payment method: ${pay}`);
         }
+        await this.page.getByRole('checkbox', { name: "I agree to FlySafair's Booking T&C's" }).check();
+        await this.page.getByRole('button', { name: 'Pay now' }).nth(1).click();
+
+        let refNo = "SGTDH"
+        let now = new Date();
+        let dates = now.toString();
+        console.log("Booking reference no is: " + refNo)
+        // Write booking ref no to json file
+        const data = {
+            bookingRef: refNo,
+            timeStamp: dates
+        };
+        fs.writeFileSync("test-results/test-data/data.json", JSON.stringify(data, null, 2), "utf-8"
+        );
+
     }
+
 
     public async getRefNoAndAssert() {
-        let refNo = this.bookingRef.inputValue();
-        let assValue = this.bookingAssertMessage.getAttribute;
-        console.log("Booking reference no is: " + refNo)
+        let now = new Date();
+        let dates = now.toISOString();  // full timestamp
+        let refNo = await this.bookingRef.inputValue();
+
+        // Get assertion message text
+        let assValue = await this.bookingAssertMessage.textContent();
+
+        console.log("Booking reference no is: " + refNo);
+
         // Assertion
-        expect(assValue).toBe("Payment Complete");
+        expect(assValue?.trim()).toBe("Payment Complete");
+
+        // JSON file path
+        const filePath = "test-results/test-data/data.json";
+
+        // Read existing (if file exists)
+        let existing: any[] = [];
+        if (fs.existsSync(filePath)) {
+            existing = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+        }
+
+        // Append new record
+        const data = {
+            bookingRef: refNo,
+            lastName: "Automation",
+            timeStamp: dates
+        };
+        existing.push(data);
+
+        // Write back
+        fs.writeFileSync(filePath, JSON.stringify(existing, null, 2), "utf-8");
     }
 }
+
+

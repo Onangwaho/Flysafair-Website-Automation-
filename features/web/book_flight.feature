@@ -18,10 +18,11 @@ Feature: FLYSAFAIR FLIGHT BOOKINGS
         Then customer clicks "NO CAR, THANKS"
         When customer selects travel protection "No"
         When customer select payment method "<paymentMethod>" and pay
-        # Then payment is confirmed and booking is succesfull
+        Then booking reference is created and payment is confirmed booking is succesfull
+
         Examples:
-            | origin       | destination | depatureDate            | returnDate             | noAdults | noChild | infant | classType | email                      | paymentMethod |
-            | Johannesburg | Cape Town   | Tuesday, 26 August 2025 | Friday, 22 August 2025 | 2        | 2       | 2      | Lite      | tmahwasane@flysafair.co.za | ozow          |
+            | origin       | destination | depatureDate             | returnDate             | noAdults | noChild | infant | classType | email                      | paymentMethod |
+            | Johannesburg | Cape Town   | Saturday, 30 August 2025 | Friday, 22 August 2025 | 2        | 0       | 0      | Lite      | tmahwasane@flysafair.co.za | paylater      |
 
     @infant
     Scenario Outline: Verify user is unable to add infants that are more than number of adults

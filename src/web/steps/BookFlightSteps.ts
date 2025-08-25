@@ -41,9 +41,11 @@ Then(/^customer clicks "([^"]*)"$/, async function (carHire) {
     await new BookFlight(this.web, this.page).fnClickNoCarHire(carHire)
 });
 
-Then(/^payment is confirmed and booking is succesfull$/, async function () {
+Then(/^booking reference is created and payment is confirmed booking is succesfull$/, async function () {
     await new BookFlight(this.web, this.page).getRefNoAndAssert();
 });
+
+
 
 When(/^customer select payment method "([^"]*)" and pay$/, async function (payType) {
     await new BookFlight(this.web, this.page).fnPayFlight(payType)
@@ -67,8 +69,6 @@ Given(/^user speak to Lindi$/, async function () {
     await this.page.getByRole('gridcell', { name: 'Lindy UAT' }).locator('div:has-text("Lindy UAT")').first().click();
     await this.page.getByRole('textbox', { name: 'Type a message' }).fill("Hi");
     await this.page.getByRole('textbox', { name: 'Type a message' }).press('Enter');
-
-
 });
 
 
