@@ -38,7 +38,7 @@ export default class BookFlight {
         this.iframe = page.frameLocator('[id^="_hjSafeContext_"]');
 
         this.btnLetsGo = this.page.getByRole('button', { name: 'Let\'s go' });
-        this.selectPrices = this.page.locator('xpath=/html[1]/body[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[5]/div[1]/div[2]/button[1]');
+        this.selectPrices = this.page.locator('xpath=/html/body/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/div[1]/div/div[3]/div/div[2]/div/div[5]/div[1]/div[2]/button');
         this.selectLite = this.iframe.locator("//div[starts-with(@id, '__BVID__')]/div/div[1]/div/div[1]")
 
         this.businessClass = this.page.locator("//*[contains(@id, '__BVID__')]/div/div[1]/div/div[4]")
@@ -120,7 +120,7 @@ export default class BookFlight {
             await this.page.locator('select[name="child"]').first().selectOption(child);
         }
         // select no of Infants
-        if (adultorigin > infant) {
+        if (adultorigin >= infant) {
             if (infant > "0") {
                 await this.page.locator('select[name="child"]').nth(1).selectOption(infant);
             }
@@ -157,6 +157,9 @@ export default class BookFlight {
 
     public async clickLetsGo() {
         await this.btnLetsGo.click();
+
+
+
     }
     public async selectclassType(type: string) {
         await this.page.waitForTimeout(4000);
@@ -193,33 +196,73 @@ export default class BookFlight {
         await this.clickContinue.click();
     }
 
-    public async fnEnterPassangerDetails(noAdults: string, noKids: string, noInfant: string) {
+    public async fnEnterPassangerDetails(noAdults: string, noKids: string, noInfants: string) {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        const numAdults = Number(noAdults);
 
-        for (let i = 0; i < numAdults; i++) {
-            let result = '';
-            for (let b = 0; b < 5; b++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
+        // random string
+        const randomStr = (len = 5) =>
+            Array.from({ length: len }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+
+        //fill passenger fields
+        const fillPassenger = async (
+            index: number,
+            type: 'adult' | 'kid' | 'infant',
+            overrides: { firstName?: string; lastName?: string; documentId?: string; mobile?: string; email?: string } = {}
+        ) => {
+            const namePrefix = overrides.firstName ||
+                (type === 'adult' ? 'Auto' : type === 'kid' ? 'Child' : 'Infant') + randomStr();
+            const lastName = overrides.lastName || (type === 'adult' ? 'Automation' : type === 'kid' ? 'Child' : 'Infant');
+            const docId = overrides.documentId ||
+                (type === 'adult' ? '8411045399080' : type === 'kid' ? '1501019298088' : '2501019298088');
+
+            await this.page.locator(`input[name="\\3${index} -firstName"]`).fill(namePrefix);
+            await this.page.locator(`input[name="\\3${index} -lastName"]`).fill(lastName);
+            await this.page.locator(`input[name="\\3${index} -document-id"]`).fill(docId);
+
+            if (overrides.mobile) {
+                await this.page.locator(`input[name="\\3${index} -Contact number"]`).fill(overrides.mobile);
             }
+            if (overrides.email) {
+                await this.page.locator(`input[name="\\3${index} -email"]`).fill(overrides.email);
+                await this.page.locator(`input[name="\\3${index} -email-confirmation"]`).fill(overrides.email);
+            }
+        };
 
+        const numAdults = Number(noAdults);
+        const numKids = Number(noKids);
+        const numInfant = Number(noInfants);
+
+        let index = 1;
+
+        // === ADULTS ===
+        for (let i = 0; i < numAdults; i++, index++) {
             if (i === 0) {
-                await this.page.locator(`input[name="\\30 -firstName"]`).fill("Auto" + result);
-                await this.page.locator(`input[name="\\30 -lastName"]`).fill('Automation');
-                await this.page.locator(`input[name="\\30 -document-id"]`).fill('8411045399080');
+                // Primary adult: special case
+                const rand = randomStr();
+                await this.page.locator(`input[name="\\30 -firstName"]`).fill("Auto" + rand);
+                await this.page.locator(`input[name="\\30 -lastName"]`).fill("Automation");
+                await this.page.locator(`input[name="\\30 -document-id"]`).fill("8411045399080");
                 await this.page.getByRole('textbox', { name: 'Mobile Number *' }).fill('+27725556666');
                 await this.page.getByRole('textbox', { name: 'Email Address *' }).fill('tmahwasane@flysafair.co.za');
                 await this.page.getByRole('textbox', { name: 'Confirm Email Address *' }).fill('tmahwasane@flysafair.co.za');
+                index--;
             } else {
-                await this.page.locator(`input[name="\\3${i} -firstName"]`).fill("Auto" + result);
-                await this.page.locator(`input[name="\\3${i} -lastName"]`).fill('Automation');
-                await this.page.locator(`input[name="\\3${i} -document-id"]`).fill('8411045399080');
-                await this.page.locator(`input[name="\\3${i} -Contact number"]`).fill('+27712225555');
-                await this.page.locator(`input[name="\\3${i} -email"]`).fill('test@gmail.com');
-                await this.page.locator(`input[name="\\3${i} -email-confirmation"]`).fill('test@gmail.com');
+                await fillPassenger(index, 'adult', { mobile: '+27712225555', email: 'test@gmail.com' });
             }
         }
+
+        // === KIDS ===
+        for (let k = 0; k < numKids; k++, index++) {
+            await fillPassenger(index, 'kid');
+        }
+
+        // === INFANTS ===
+        for (let d = 0; d < numInfant; d++, index++) {
+            await fillPassenger(index, 'infant');
+        }
     }
+
+
 
     public async fnPayFlight(pay: string) {
 

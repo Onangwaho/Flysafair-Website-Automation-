@@ -58,6 +58,20 @@ Then(/^Verify if user is unable to add infants that are more than number of adul
     await new BookFlight(this.web, this.page).verifyAdultInfantChecks(Adult, infant)
 });
 
+Given(/^user speak to Lindi$/, async function () {
+    await this.page.goto('https://web.whatsapp.com/');
+    await this.page.getByRole('button', { name: 'Continue' }).click();
+    await this.page.getByRole('paragraph').click();
+    await this.page.getByRole('textbox', { name: 'Search input textbox' }).fill("Lindy UAT");
+    await this.page.getByRole('textbox', { name: 'Search input textbox' }).press('Enter');
+    await this.page.getByRole('gridcell', { name: 'Lindy UAT' }).locator('div:has-text("Lindy UAT")').first().click();
+    await this.page.getByRole('textbox', { name: 'Type a message' }).fill("Hi");
+    await this.page.getByRole('textbox', { name: 'Type a message' }).press('Enter');
+
+
+});
+
+
 
 
 

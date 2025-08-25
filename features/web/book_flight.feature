@@ -20,8 +20,8 @@ Feature: FLYSAFAIR FLIGHT BOOKINGS
         When customer select payment method "<paymentMethod>" and pay
         # Then payment is confirmed and booking is succesfull
         Examples:
-            | origin       | destination | depatureDate           | returnDate             | noAdults | noChild | infant | classType | email                      | paymentMethod |
-            | Johannesburg | Cape Town   | Friday, 22 August 2025 | Friday, 22 August 2025 | 1        | 0       | 0      | Lite      | tmahwasane@flysafair.co.za | ozow          |
+            | origin       | destination | depatureDate            | returnDate             | noAdults | noChild | infant | classType | email                      | paymentMethod |
+            | Johannesburg | Cape Town   | Tuesday, 26 August 2025 | Friday, 22 August 2025 | 2        | 2       | 2      | Lite      | tmahwasane@flysafair.co.za | ozow          |
 
     @infant
     Scenario Outline: Verify user is unable to add infants that are more than number of adults
@@ -32,4 +32,4 @@ Feature: FLYSAFAIR FLIGHT BOOKINGS
         Then Verify if user is unable to add infants that are more than number of adults "<noAdults>", "<infant>"
         Examples:
             | origin       | destination | depatureDate             | returnDate             | noAdults | noChild | infant | classType | email                      | paymentMethod |
-            | Johannesburg | Cape Town   | Thursday, 21 August 2025 | Friday, 22 August 2025 | 1        | 0       | 3      | Lite      | tmahwasane@flysafair.co.za | ozow          |
+            | Johannesburg | Cape Town   | Saturday, 23 August 2025 | Friday, 22 August 2025 | 2        | 2       | 2      | Lite      | tmahwasane@flysafair.co.za | ozow          |
