@@ -1,7 +1,7 @@
 {
-  "name": "playwright-cucumber--project",
+  "name": "flysafair-test-automation-cucumber--project",
   "version": "1.0.0",
-  "description": "Playwright and Cucumber Project",
+  "description": "flysafair-test-automation-cucumber--project",
   "main": "index.js",
   "scripts": {
     "test": "npx cucumber-js -p runner & npx ts-node ./src/support/reporter/HTMLReporter.ts & npx ts-node ./src/support/reporter/CucumberReporter.ts",

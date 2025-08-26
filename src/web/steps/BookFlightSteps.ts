@@ -39,6 +39,20 @@ When(/^customer selects travel protection "([^"]*)"$/, async function (protecion
 
 Then(/^customer clicks "([^"]*)"$/, async function (carHire) {
     await new BookFlight(this.web, this.page).fnClickNoCarHire(carHire)
+
+    // // attached data to cucumber report
+    // const bookingRef = "SGTDH";
+    // const timestamp = new Date().toISOString();
+
+    // // Log to terminal
+    // console.log(`Booking reference: ${bookingRef} at ${timestamp}`);
+
+    // // Attach to Cucumber report
+    // await this.attach(`Booking Reference: ${bookingRef}\nTimestamp: ${timestamp}`, "text/plain");
+
+    // // Or attach structured JSON
+    // await this.attach(JSON.stringify({ bookingRef, timestamp }, null, 2),"application/json"
+    // );
 });
 
 Then(/^booking reference is created and payment is confirmed booking is succesfull$/, async function () {

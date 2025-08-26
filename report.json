@@ -4,7 +4,7 @@
     "elements": [
       {
         "description": "",
-        "id": "scenarios-related-to-register-user;book-a-flight",
+        "id": "book-a-flight",
         "keyword": "Scenario Outline",
         "line": 25,
         "name": "book a flight",
