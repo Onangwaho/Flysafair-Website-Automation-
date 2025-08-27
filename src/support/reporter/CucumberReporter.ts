@@ -4,26 +4,26 @@ import EnvUtil from "../utils/EnvUtil";
 var reporter = require('cucumber-html-reporter');
 
 export default class CucumberReporter {
-    public static generate() {
-        EnvUtil.setEnv();
+  public static generate() {
+    EnvUtil.setEnv();
 
-        const options = {
-            brandTitle: "My Custom Report",
-            theme: 'bootstrap',
-            jsonFile: 'test-results/reports/cucumber.json',
-            output: 'test-results/reports/cucumber.html',
-            reportSuiteAsScenarios: true,
-            scenarioTimestamp: true,
-            launchReport: false,
-            columnLayout: 1,
-            metadata: {
-                "Execution Date": DateUtil.dateGenerator("DD/MM/YYYY", 0, 0, 0),
-                "Base URL": process.env.BASE_URL,
-                "Environment": process.env.ENVIRONMENT,
-                "Browser": process.env.BROWSER,
-            },
-            // 👇 Custom CSS
-            customStyles: `
+    const options = {
+      brandTitle: "My Custom Report",
+      theme: 'bootstrap',
+      jsonFile: 'test-results/reports/cucumber.json',
+      output: 'test-results/reports/cucumber.html',
+      reportSuiteAsScenarios: true,
+      scenarioTimestamp: true,
+      launchReport: false,
+      columnLayout: 1,
+      metadata: {
+        "Execution Date": DateUtil.dateGenerator("DD/MM/YYYY", 0, 0, 0),
+        "Base URL": process.env.BASE_URL,
+        "Environment": process.env.ENVIRONMENT,
+        "Browser": process.env.BROWSER,
+      },
+      // 👇 Custom CSS
+      customStyles: `
     body {
       background-color: #f5f5f5ff !important; /* page bg */
       color: #333 !important;              /* default text */
@@ -54,10 +54,10 @@ export default class CucumberReporter {
       color: #004080 !important;
     }
   `,
-        };
+    };
 
-        reporter.generate(options);
-    }
+    reporter.generate(options);
+  }
 }
 
 CucumberReporter.generate();

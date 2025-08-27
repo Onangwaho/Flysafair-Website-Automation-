@@ -17,16 +17,8 @@ When(/^the users enters the details "([^"]*)", "([^"]*)", "([^"]*)","([^"]*)", "
     await new BookFlight(this.web, this.page).enterTripDetails(origin, destination, depatureDate, ArrivalDate, adult, child, infant, classType, email, tripType);
 });
 
-Then(/^click button "([^"]*)"$/, async function (args1) {
-    await new BookFlight(this.web, this.page).clickLetsGo();
-});
-
-Then(/^clicks button "([^"]*)"$/, async function (args1) {
-    await new BookFlight(this.web, this.page).fnClickContinue();
-});
-
-When(/^user select ticket prices and class type "([^"]*)"$/, async function (classType) {
-    await new BookFlight(this.web, this.page).selectclassType(classType);
+When(/^user select ticket prices and class type "([^"]*)", "([^"]*)"$/, async function (classType, triptypo) {
+    await new BookFlight(this.web, this.page).selectclassType(classType, triptypo);
 });
 
 When(/^capture passangers details "([^"]*)", "([^"]*)", "([^"]*)"$/, async function (noAdults, noKids, noIfant) {
@@ -36,6 +28,12 @@ When(/^capture passangers details "([^"]*)", "([^"]*)", "([^"]*)"$/, async funct
 When(/^customer selects travel protection "([^"]*)"$/, async function (protecion) {
     await new BookFlight(this.web, this.page).fnTravelProtection(protecion);
 });
+
+
+Then(/^clicks button a button "([^"]*)"$/, async function (button) {
+    await new BookFlight(this.web, this.page).fnClickButton(button);
+});
+
 
 Then(/^customer clicks "([^"]*)"$/, async function (carHire) {
     await new BookFlight(this.web, this.page).fnClickNoCarHire(carHire)
@@ -84,6 +82,8 @@ Given(/^user speak to Lindi$/, async function () {
     await this.page.getByRole('textbox', { name: 'Type a message' }).fill("Hi");
     await this.page.getByRole('textbox', { name: 'Type a message' }).press('Enter');
 });
+
+
 
 
 

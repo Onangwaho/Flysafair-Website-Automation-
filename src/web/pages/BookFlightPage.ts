@@ -9,12 +9,11 @@ import * as fs from "fs";
 export default class BookFlight {
     readonly iframe: FrameLocator;
     readonly page: Page;
-    readonly btnLetsGo: Locator;
     readonly selectPrices: Locator;
+    readonly secondSelectPrices: Locator;
     readonly selectLite: Locator;
     readonly standard: Locator;
     readonly businessClass: Locator;
-    readonly clickContinue: Locator;
     readonly clickbtnNothanks: Locator;
 
     readonly txtFirtName: Locator;
@@ -38,12 +37,15 @@ export default class BookFlight {
         this.page = page;
         this.iframe = page.frameLocator('[id^="_hjSafeContext_"]');
 
-        this.btnLetsGo = this.page.getByRole('button', { name: 'Let\'s go' });
-        this.selectPrices = this.page.locator('xpath=/html/body/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div[5]/div[1]/div[2]/button');
+
+        this.selectPrices = this.page.locator('xpath=/html/body/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/div[1]/div/div[3]/div/div[2]/div/div[5]/div[1]/div[2]/button');
+        this.secondSelectPrices = this.page.locator('xpath=/html/body/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/div[1]/div/div[2]/div/div[2]/div/div[5]/div[1]/div[2]/button');
+
+
+
         this.selectLite = this.iframe.locator("//div[starts-with(@id, '__BVID__')]/div/div[1]/div/div[1]")
 
         this.businessClass = this.page.locator("//*[contains(@id, '__BVID__')]/div/div[1]/div/div[4]")
-        this.clickContinue = this.page.getByRole('button', { name: 'Continue' });
         this.clickbtnNothanks = this.page.getByRole('button', { name: 'No car, thanks' }).nth(1);
 
         this.txtFirtName = this.page.locator('xpath=/html[1]/body[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/input[1]');
@@ -158,26 +160,57 @@ export default class BookFlight {
         }
     }
 
-    public async clickLetsGo() {
-        await this.btnLetsGo.click();
-
-
-
+    public async fnClickButton(buttonName: string) {
+        await this.page.waitForTimeout(1000);
+        await this.page.getByRole('button', { name: buttonName }).click();
     }
-    public async selectclassType(type: string) {
+
+    public async selectclassType(flightType: string, tripType: string) {
         await this.page.waitForTimeout(4000);
-        await this.selectPrices.click();
 
-        if (type == "Lite") {
-            await this.page.locator('div:has-text("Hand Luggage Checked luggage not included")').nth(7).click();
+
+        if (tripType === "One-way") {
+            await this.selectPrices.click();
+            if (flightType == "Lite") {
+                await this.page.locator('div:has-text("Hand Luggage Checked luggage not included")').nth(7).click();
+            }
+            if (flightType == "Standard") {
+                await this.page.locator('div:has-text("Standard Hand Luggage Luggage")').nth(7).click();
+            }
+            if (flightType == "Business") {
+                await this.page.locator('div:has-text("Most Popular Business Class")').nth(7).click();
+            }
         }
-        if (type == "Standard") {
-            await this.page.locator('div:has-text("Standard Hand Luggage Luggage")').nth(7).click();
+        else {
+            await this.selectPrices.click();
+            if (flightType == "Lite") {
+                await this.page.locator('div:has-text("Hand Luggage Checked luggage not included")').nth(7).click();
+            }
+            if (flightType == "Standard") {
+                await this.page.locator('div:has-text("Standard Hand Luggage Luggage")').nth(7).click();
+            }
+            if (flightType == "Business") {
+                await this.page.locator('div:has-text("Most Popular Business Class")').nth(7).click();
+            }
+
+            await this.secondSelectPrices.click();
+            if (flightType == "Lite") {
+                await this.page.locator('div:has-text("Hand Luggage Checked luggage not included")').nth(7).click();
+            }
+            if (flightType == "Standard") {
+                await this.page.locator('div:has-text("Standard Hand Luggage Luggage")').nth(7).click();
+            }
+            if (flightType == "Business") {
+                await this.page.locator('div:has-text("Most Popular Business Class")').nth(7).click();
+            }
+
+
+
         }
-        if (type == "Business") {
-            await this.page.locator('div:has-text("Most Popular Business Class")').nth(7).click();
-        }
+
     }
+
+
 
     public async fnClickNoCarHire(car: string) {
         await this.page.waitForTimeout(3000);
@@ -193,11 +226,6 @@ export default class BookFlight {
         else {
             await this.rdbYes.click();
         }
-    }
-
-    public async fnClickContinue() {
-        await this.page.waitForTimeout(1000);
-        await this.clickContinue.click();
     }
 
     public async fnEnterPassangerDetails(noAdults: string, noKids: string, noInfants: string) {
@@ -247,8 +275,8 @@ export default class BookFlight {
                 await this.page.locator(`input[name="\\30 -lastName"]`).fill("Automation");
                 await this.page.locator(`input[name="\\30 -document-id"]`).fill("8411045399080");
                 await this.page.getByRole('textbox', { name: 'Mobile Number *' }).fill('+27725556666');
-                await this.page.getByRole('textbox', { name: 'Email Address *' }).fill('tmahwasane@flysafair.co.za');
-                await this.page.getByRole('textbox', { name: 'Confirm Email Address *' }).fill('tmahwasane@flysafair.co.za');
+                await this.page.getByRole('textbox', { name: 'Email Address *' }).fill('tmahwasanet@flysafair.co.za');
+                await this.page.getByRole('textbox', { name: 'Confirm Email Address *' }).fill('tmahwasanet@flysafair.co.za');
                 index--;
             } else {
                 await fillPassenger(index, 'adult', { mobile: '+27712225555', email: 'test@gmail.com' });
@@ -329,8 +357,10 @@ export default class BookFlight {
 
         }
 
-    }
 
+
+
+    }
 
 }
 
