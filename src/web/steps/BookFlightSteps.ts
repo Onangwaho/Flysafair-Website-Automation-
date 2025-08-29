@@ -52,6 +52,7 @@ When(/^customer select payment method "([^"]*)" and pay$/, async function (payTy
 });
 
 
-
-
+Then(/^add the specified extras "([^"]*)","([^"]*)", "([^"]*)", "([^"]*)", "([^"]*)", "([^"]*)", "([^"]*)", "([^"]*)","([^"]*)", "([^"]*)"$/, async function (ticket_Type, checked_Luggage, baggage_Protection, priority_Boarding, extra_Bag, special_Luggage, snack, special_Assistance, bidvest_Premier_Lounge, carriage_of_Firearms) {
+    await new BookFlight(this.web, this.page).personaliseYourFlight(ticket_Type, checked_Luggage, baggage_Protection, priority_Boarding, extra_Bag, special_Luggage, snack, special_Assistance, bidvest_Premier_Lounge, carriage_of_Firearms);
+});
 

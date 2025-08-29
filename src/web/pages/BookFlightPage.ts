@@ -24,6 +24,28 @@ export default class BookFlight {
     readonly rdbYes: Locator;
     readonly rdbNo: Locator;
 
+    //Personalise Your Flight
+    readonly checked_Luggage_Btn: Locator;
+    readonly baggage_Protection_Btn: Locator;
+    readonly priority_Boarding_Btn: Locator;
+    readonly extra_Bag_Btn: Locator;
+    readonly special_Luggage_Btn: Locator;
+    readonly snack_Btn: Locator;
+    readonly special_Assistance_Btn: Locator;
+    readonly bidvest_Premier_Lounge_Btn: Locator;
+    readonly carriage_of_Firearms_Btn: Locator;
+    readonly update_Btn: Locator;
+    readonly extra_Checkbox: Locator;
+
+        //Special Assistance?
+        readonly special_assistance_question: Locator;
+        
+
+(//div[@class='form-group radio-container sp-extra--special-assistance-question__input assistance-question__input'])[3]
+
+
+
+
     readonly ozowPayment: Locator;
 
     readonly bookingRef: Locator;
@@ -58,6 +80,24 @@ export default class BookFlight {
         this.bookingRef = this.page.locator('//*[@id="app"]/div[2]/div[2]/div/div/div/div[2]/div/div/div[1]/div/div/p/h4/span[2]');
         this.bookingAssertMessage = this.page.locator('//*[@id="app"]/div[2]/div[2]/div/div/div/div[2]/div/div/div[1]/div/div/h1');
         this.bookingAssertMessage = this.page.locator('xpath=/html/body/div[1]/div[2]/div[1]/div/div/div/div[2]/div/div[1]/div/div[2]/div/button');
+
+
+
+        this.checked_Luggage_Btn = this.page.locator('//h6[normalize-space()="Checked Luggage"]/following::button[1]');
+        this.baggage_Protection_Btn = this.page.locator('//h6[normalize-space()="Baggage Protection"]/following::button[1]');
+        this.priority_Boarding_Btn = this.page.locator('//h6[normalize-space()="Priority Boarding"]/following::button[1]');
+        this.extra_Bag_Btn = this.page.locator('//h6[normalize-space()="Extra Bag"]/following::button[1]');
+        this.special_Luggage_Btn = this.page.locator('//h6[normalize-space()="Special Luggage"]/following::button[1]');
+        this.snack_Btn = this.page.locator('//h6[normalize-space()="Snack"]/following::button[1]');
+        this.special_Assistance_Btn = this.page.locator('//h6[normalize-space()="Special Assistance?"]/following::button[1]');
+        this.bidvest_Premier_Lounge_Btn = this.page.locator('//h6[normalize-space()="Bidvest Premier Lounge"]/following::button[1]');
+        this.carriage_of_Firearms_Btn = this.page.locator('//h6[normalize-space()="Carriage of Firearms"]/following::button[1]');
+        this.update_Btn = this.page.getByRole('button', { name: 'Update' });
+        //this.extra_Checkbox = this.page.locator('//h6[normalize-space()="Special Assistance?"]/following::button[1]');
+
+        //html[1]/body[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[2]/div[3]/div[1]/div[3]/div[1]/button[1]
+        //html[1]/body[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[2]/div[4]/div[1]/div[3]/div[1]/button[1]
+
     }
 
     private txtDepature = "//input[@placeholder='Please select origin']";
@@ -158,6 +198,7 @@ export default class BookFlight {
     }
 
     public async fnClickContinue() {
+        await this.page.waitForTimeout(10000);
         await this.clickContinue.click();
     }
 
@@ -207,4 +248,187 @@ export default class BookFlight {
         // Assertion
         expect(assValue).toBe("Payment Complete");
     }
+
+    getExtraCheckbox(extraName: string) {
+        return this.page.locator(`//h6[normalize-space()="${extraName}"]/following::input[1]`);
+    }
+
+    getButtonByName(buttonName: string) {
+        return this.page.getByRole('button', { name: buttonName });
+    }
+
+    public async personaliseYourFlight(ticket_Type: string, checked_Luggage: string, baggage_Protection: string, priority_Boarding: string, extra_Bag: string, special_Luggage: string, snack: string, special_Assistance: string, bidvest_Premier_Lounge: string, carriage_of_Firearms: string) {
+
+
+        /*    
+            const isYes = (val: string) => val.toLowerCase() === "y" || val.toLowerCase() === "yes";
+            let addedExtra = false;
+    
+            if (isYes(checked_Luggage) && ticket_Type === "Lite") {
+                await this.checked_Luggage_Btn.click();
+                addedExtra = true;
+            }
+    
+            if (isYes(baggage_Protection)) {
+                await this.baggage_Protection_Btn.click();
+                addedExtra = true;
+            }
+    
+            if (isYes(priority_Boarding) && ticket_Type !== "Business Class") {
+                await this.priority_Boarding_Btn.click();
+                addedExtra = true;
+            }
+    
+            if (isYes(extra_Bag) && ticket_Type !== "Business Class") {
+                await this.extra_Bag_Btn.click();
+                addedExtra = true;
+            }
+    
+            if (isYes(special_Luggage) && ticket_Type !== "Business Class") {
+                await this.special_Luggage_Btn.click();
+                addedExtra = true;
+            }
+    
+            if (isYes(snack) && ticket_Type !== "Business Class") {
+                await this.snack_Btn.click();
+                addedExtra = true;
+            }
+    
+            if (isYes(special_Assistance)) {
+                await this.special_Assistance_Btn.click();
+                addedExtra = true;
+            }
+    
+            if (isYes(bidvest_Premier_Lounge)) {
+                await this.bidvest_Premier_Lounge_Btn.click();
+                addedExtra = true;
+            }
+    
+            if (isYes(carriage_of_Firearms) && ticket_Type === "Business Class") {
+                await this.carriage_of_Firearms_Btn.click();
+                addedExtra = true;
+            }
+    
+            if (!addedExtra) {
+                console.log("No extras added");
+    
+            }
+            await this.page.waitForTimeout(3000);
+            console.log("Finished personalising flight");
+    */
+
+        // Flag to track whether any extra was added
+        let addedExtra = false;
+
+        // Helper function to check if a value indicates selection ("y" or "yes")
+        const isYes = (val: string) => val.toLowerCase() === "y" || val.toLowerCase() === "yes";
+
+        // Array of extras with their names and values for looping
+        const extras = [
+            { name: "checked_Luggage", value: checked_Luggage },
+            { name: "baggage_Protection", value: baggage_Protection },
+            { name: "priority_Boarding", value: priority_Boarding },
+            { name: "extra_Bag", value: extra_Bag },
+            { name: "special_Luggage", value: special_Luggage },
+            { name: "snack", value: snack },
+            { name: "special_Assistance", value: special_Assistance },
+            { name: "bidvest_Premier_Lounge", value: bidvest_Premier_Lounge },
+            { name: "carriage_of_Firearms", value: carriage_of_Firearms },
+        ];
+
+        // Loop through each extra to check if it should be added
+        for (const extra of extras) {
+            // Skip extras that are not selected
+            if (!isYes(extra.value)) continue;
+
+            // Switch statement to handle each extra separately
+            switch (extra.name) {
+                case "checked_Luggage":
+                    // Only Lite tickets can add checked luggage
+                    if (ticket_Type === "Lite") {
+                        await this.checked_Luggage_Btn.click();
+                        addedExtra = true;  // Mark that an extra was added
+                    }
+                    break;
+
+                case "baggage_Protection":
+                    await this.baggage_Protection_Btn.click();
+                    addedExtra = true;
+                    await this.page.waitForTimeout(3000);
+                    await this.getExtraCheckbox("Baggage Protection").click();
+                    await this.page.waitForTimeout(3000);
+                    //this.update_Btn.click();
+                    await this.getButtonByName("Update").nth(0).click();
+                    break;
+
+                case "priority_Boarding":
+                    // Priority Boarding not allowed for Business Class
+                    if (ticket_Type !== "Business Class") {
+                        await this.priority_Boarding_Btn.click();
+                        addedExtra = true;
+                    }
+                    break;
+
+                case "extra_Bag":
+                    if (ticket_Type !== "Business Class") {
+                        await this.extra_Bag_Btn.click();
+                        addedExtra = true;
+                    }
+                    break;
+
+                case "special_Luggage":
+                    if (ticket_Type !== "Business Class") {
+                        await this.special_Luggage_Btn.click();
+                        addedExtra = true;
+                    }
+                    break;
+
+                case "snack":
+                    if (ticket_Type !== "Business Class") {
+                        await this.snack_Btn.click();
+                        addedExtra = true;
+                    }
+                    break;
+
+                case "special_Assistance":
+                    await this.special_Assistance_Btn.click();
+                    addedExtra = true;
+                    await this.page.waitForTimeout(3000);
+                    await this.getExtraCheckbox("Special Assistance?").click();
+                    await this.page.waitForTimeout(3000);
+                    await this.page.locator('input[value="Yes"]').click();
+
+                    await this.page.waitForTimeout(3000);
+                    await this.getButtonByName("Update").nth(0).click();
+                    break;
+
+                case "bidvest_Premier_Lounge":
+                    await this.bidvest_Premier_Lounge_Btn.click();
+                    addedExtra = true;
+                    break;
+
+                case "carriage_of_Firearms":
+                    // Only Business Class can add carriage of firearms
+                    if (ticket_Type === "Business Class") {
+                        await this.carriage_of_Firearms_Btn.click();
+                        addedExtra = true;
+                    }
+                    break;
+            }
+        }
+
+        // If no extras were added, print a message and wait briefly
+        if (!addedExtra) {
+            console.log("No extras added");
+            await this.page.waitForTimeout(3000);
+        }
+
+        console.log("Finished personalising flight");
+        await this.page.waitForTimeout(30000);
+    }
+
+
+
+
+
 }

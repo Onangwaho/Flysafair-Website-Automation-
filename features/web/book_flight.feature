@@ -13,13 +13,12 @@ Feature: FLYSAFAIR FLIGHT BOOKINGS
         Then clicks button "Continue"
         When capture passangers details "<noAdults>", "<noChild>", "<infant>"
         Then clicks button "Continue"
-        Then clicks button "Continue"
-        Then clicks button "Clear"
-        # Then clicks button "Continue"
-        Then customer clicks "NO CAR, THANKS"
-        When customer selects travel protection "No"
-        When customer select payment method "<paymentMethod>" and pay
-        # Then payment is confirmed and booking is succesfull
+        #Then clicks button "Continue"
+        Then add the specified extras "<classType>","<Checked Luggage>", "<Baggage Protection>", "<Priority Boarding>", "<Extra Bag>", "<Special Luggage>", "<Snack>", "<Special Assistance>","<Bidvest Premier Lounge>", "<Carriage of Firearms>"
+
+
         Examples:
-            | origin       | destination | depatureDate             | returnDate             | noAdults | noChild | infant | classType | email                      | paymentMethod |
-            | Johannesburg | Cape Town   | Thursday, 21 August 2025 | Friday, 22 August 2025 | 1        | 0       | 0      | Lite      | tmahwasane@flysafair.co.za | ozow          |
+            | origin       | destination | depatureDate           | returnDate               | noAdults | noChild | infant | classType | email                      | paymentMethod | Checked Luggage | Baggage Protection | Priority Boarding | Extra Bag | Special Luggage | Snack | Bidvest Premier Lounge | Carriage of Firearms | Special Assistance |
+            | Johannesburg | Cape Town   | Friday, 29 August 2025 | Saturday, 30 August 2025 | 1        | 0       | 0      | Standard  | tmahwasane@flysafair.co.za | ozow          | Y               | y                  |                   |           |                 |       |                        |                      | y                  |
+
+
