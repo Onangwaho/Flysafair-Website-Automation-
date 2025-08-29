@@ -37,13 +37,8 @@ export default class BookFlight {
     readonly update_Btn: Locator;
     readonly extra_Checkbox: Locator;
 
-        //Special Assistance?
-        readonly special_assistance_question: Locator;
-        
-
-(//div[@class='form-group radio-container sp-extra--special-assistance-question__input assistance-question__input'])[3]
-
-
+    //Special Assistance?
+    readonly special_assistance_question: Locator
 
 
     readonly ozowPayment: Locator;
