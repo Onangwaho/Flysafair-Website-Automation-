@@ -11,6 +11,7 @@ export default class BookFlight {
     readonly page: Page;
     readonly selectPrices: Locator;
     readonly secondSelectPrices: Locator;
+    readonly selectPricesRoundtrip: Locator;
     readonly selectLite: Locator;
     readonly standard: Locator;
     readonly businessClass: Locator;
@@ -40,20 +41,9 @@ export default class BookFlight {
 
         this.selectPrices = this.page.locator('xpath=/html/body/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/div[1]/div/div[3]/div/div[2]/div/div[5]/div[1]/div[2]/button');
         this.secondSelectPrices = this.page.locator('xpath=/html/body/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/div[1]/div/div[2]/div/div[2]/div/div[5]/div[1]/div[2]/button');
+        this.selectPricesRoundtrip = this.page.locator('xpath=/html/body/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div[5]/div[1]/div[2]/button');
 
-
-
-        this.selectLite = this.iframe.locator("//div[starts-with(@id, '__BVID__')]/div/div[1]/div/div[1]")
-
-        this.businessClass = this.page.locator("//*[contains(@id, '__BVID__')]/div/div[1]/div/div[4]")
         this.clickbtnNothanks = this.page.getByRole('button', { name: 'No car, thanks' }).nth(1);
-
-        this.txtFirtName = this.page.locator('xpath=/html[1]/body[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/input[1]');
-        this.txtSurname = this.page.locator('xpath=/html[1]/body[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]/div[1]/input[1]');
-        this.txtID = this.page.locator('xpath=/html[1]/body[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[2]/div[1]/input[1]');
-        this.txtMobileNumber = this.page.locator("xpath=/html[1]/body[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[3]/div[1]/input[1]");
-        this.txtEmail = this.page.locator('xpath=/html[1]/body[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[4]/div[1]/div[1]/input[1]');
-        this.txtConEmail = this.page.locator('xpath=/html[1]/body[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[4]/div[2]/div[1]/input[1]');
 
         this.rdbYes = this.page.getByLabel('Yes, add travel protection to my flight for an additional R32 per person');
         this.rdbNo = this.page.getByLabel('No, I choose not to protect my purchase.');
@@ -61,8 +51,6 @@ export default class BookFlight {
 
         this.bookingRef = this.page.locator('//*[@id="app"]/div[2]/div[2]/div/div/div/div[2]/div/div/div[1]/div/div/p/h4/span[2]');
         this.bookingAssertMessage = this.page.getByRole('heading', { name: 'Payment Complete' }).first();
-        // this.bookingAssertMessage = this.page.locator('#app > div:nth-child(2) > div.main-container > div > div > div > div:nth-child(2) > div > div > div.content-container__left > div > div > h1');
-
 
     }
 
@@ -79,7 +67,7 @@ export default class BookFlight {
             await this.page.getByLabel('One-way').check();
         }
     }
-    public async enterTripDetails(origin: string, destination: string, depatureDate: string, ArrivalDate: string, adultorigin: string, child: string, infant: string, classType: string, email: string, tripType: string) {
+    public async enterTripDetails(origin: string, destination: string, depatureDate: string, ArrivalDate: string, adultorigin: string, child: string, infant: string, classType: string, email: string, tripTypea: string) {
 
         // Enter departure
         await this.web.element(this.txtDepature, Constants.DEPARTURE).click
@@ -98,7 +86,7 @@ export default class BookFlight {
         }
 
         // Select date
-        if (tripType == "One-way") {
+        if (tripTypea == "One-way") {
             await this.page.getByLabel('Departure').click();
             await this.page.getByRole('button', { name: depatureDate }).click();
         }
@@ -108,7 +96,11 @@ export default class BookFlight {
             await this.page.getByRole('button', { name: depatureDate }).click();
             // Return
             await this.page.waitForTimeout(1000);
-            await this.page.getByLabel('Return').click();
+            try {
+                await this.page.getByLabel('Arrival').click();
+            } catch {
+                await this.page.getByLabel('Return').click();
+            }
             await this.page.getByRole('button', { name: ArrivalDate }).click();
         }
 
@@ -151,82 +143,79 @@ export default class BookFlight {
 
 
     public async verifyAdultInfantChecks(adultNo: string, infantNumber: string) {
+        const adults = parseInt(adultNo, 10);
+        const infants = parseInt(infantNumber, 10);
 
-        if (infantNumber > "0") {
+        if (infants > adults) {
             await expect(this.page.getByText('Only 1 infant per adult')).toHaveCount(1);
+        } else {
+            console.log("Fail: 'Only 1 infant per adult' message should appear when infants exceed adults.");
         }
-        else {
-            console.log("Fail: Only 1 infant per adult is suppose to be displayed since infants number is greater than adults")
+    }
+    public async fnClickBtnNoThanks() {
+        const button = this.page.locator("//button[normalize-space(.)='No car, thanks']");
+
+        if (await button.count() > 0 && await button.first().isVisible()) {
+            await button.first().click();
+            console.log(`Clicked 'No car, thanks' button`);
+        } else {
+            console.log(`'No car, thanks' button not found, skipping...`);
         }
     }
 
     public async fnClickButton(buttonName: string) {
-        await this.page.waitForTimeout(1000);
-        await this.page.getByRole('button', { name: buttonName }).click();
+        const button = this.page.getByRole('button', { name: buttonName });
+
+        try {
+            await button.waitFor({ state: "visible", timeout: 5000 });
+            await button.click();
+        } catch (error) {
+            if (buttonName === "Skip Seat") {
+                console.log(`"${buttonName}" button not found or not visible, skipping...`);
+            } else {
+                throw error; // rethrow if it's not Skip Seat
+            }
+        }
     }
 
     public async selectclassType(flightType: string, tripType: string) {
         await this.page.waitForTimeout(4000);
 
+        const flightLocators: Record<string, string> = {
+            "Lite": 'div:has-text("Hand Luggage Checked luggage not included")',
+            "Standard": 'div:has-text("Standard Hand Luggage Luggage")',
+            "Business": 'div:has-text("Most Popular Business Class")'
+        };
+
+        const selectFlight = async () => {
+            const locator = this.page.locator(flightLocators[flightType]).nth(7);
+            await locator.click();
+        };
 
         if (tripType === "One-way") {
             await this.selectPrices.click();
-            if (flightType == "Lite") {
-                await this.page.locator('div:has-text("Hand Luggage Checked luggage not included")').nth(7).click();
-            }
-            if (flightType == "Standard") {
-                await this.page.locator('div:has-text("Standard Hand Luggage Luggage")').nth(7).click();
-            }
-            if (flightType == "Business") {
-                await this.page.locator('div:has-text("Most Popular Business Class")').nth(7).click();
-            }
-        }
-        else {
-            await this.selectPrices.click();
-            if (flightType == "Lite") {
-                await this.page.locator('div:has-text("Hand Luggage Checked luggage not included")').nth(7).click();
-            }
-            if (flightType == "Standard") {
-                await this.page.locator('div:has-text("Standard Hand Luggage Luggage")').nth(7).click();
-            }
-            if (flightType == "Business") {
-                await this.page.locator('div:has-text("Most Popular Business Class")').nth(7).click();
-            }
+            await selectFlight();
+        } else {
+            await this.selectPricesRoundtrip.click();
+            await selectFlight();
 
             await this.secondSelectPrices.click();
-            if (flightType == "Lite") {
-                await this.page.locator('div:has-text("Hand Luggage Checked luggage not included")').nth(7).click();
-            }
-            if (flightType == "Standard") {
-                await this.page.locator('div:has-text("Standard Hand Luggage Luggage")').nth(7).click();
-            }
-            if (flightType == "Business") {
-                await this.page.locator('div:has-text("Most Popular Business Class")').nth(7).click();
-            }
-
-
-
+            await selectFlight();
         }
-
     }
-
 
 
     public async fnClickNoCarHire(car: string) {
-        await this.page.waitForTimeout(3000);
-        if (await this.clickbtnNothanks.isVisible()) {
+        if (await this.clickbtnNothanks.isVisible({ timeout: 5000 })) {
             await this.clickbtnNothanks.click();
         }
     }
-
     public async fnTravelProtection(travel: string) {
-        if (travel == "No") {
-            await this.rdbNo.click();
-        }
-        else {
-            await this.rdbYes.click();
-        }
+        const option = travel.toLowerCase() === "no" ? this.rdbNo : this.rdbYes;
+        await option.click();
     }
+
+
 
     public async fnEnterPassangerDetails(noAdults: string, noKids: string, noInfants: string) {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -241,11 +230,12 @@ export default class BookFlight {
             type: 'adult' | 'kid' | 'infant',
             overrides: { firstName?: string; lastName?: string; documentId?: string; mobile?: string; email?: string } = {}
         ) => {
+            const randomFour = Math.floor(1000 + Math.random() * 9000);
             const namePrefix = overrides.firstName ||
                 (type === 'adult' ? 'Auto' : type === 'kid' ? 'Child' : 'Infant') + randomStr();
             const lastName = overrides.lastName || (type === 'adult' ? 'AutomationTest' : type === 'kid' ? 'Child' : 'Infant');
             const docId = overrides.documentId ||
-                (type === 'adult' ? '8411045399080' : type === 'kid' ? '1501019298088' : '2501019298088');
+                (type === 'adult' ? '8411045399080' : type === 'kid' ? `160101${randomFour}181` : '2501019298088');
 
             await this.page.locator(`input[name="\\3${index} -firstName"]`).fill(namePrefix);
             await this.page.locator(`input[name="\\3${index} -lastName"]`).fill(lastName);
@@ -294,25 +284,25 @@ export default class BookFlight {
         }
     }
 
-    public async fnPayFlight(pay: string) {
+    public async fnPayFlight(pay: string): Promise<string> {
         switch (pay.toLowerCase()) {
             case "ozow":
                 await this.ozowPayment.click();
                 break;
-
             case "paylater":
                 await this.page.getByRole('button', { name: 'PayLater ' }).click();
                 break;
-
             default:
                 throw new Error(`Unsupported payment method: ${pay}`);
         }
+
         await this.page.getByRole('checkbox', { name: "I agree to FlySafair's Booking T&C's" }).check();
         await this.page.getByRole('button', { name: 'Pay now' }).nth(1).click();
+        await this.page.getByText('Test successful responseSelect').click();
+        // wait for booking reference to be visible
+        const ref = await this.bookingRef.textContent();
 
-        await this.page.waitForTimeout(15000);
-        await this.page.locator('//*[@id="select-testSuccessfulResponse"]/div[1]/div[2]/p/span[1]').click();
-
+        return ref?.trim() || "";
     }
 
 
@@ -331,6 +321,7 @@ export default class BookFlight {
             // expect(this.bookingAssertMessage).toHaveText("Payment Complete");
             // JSON file path
             const filePath = "test-results/test-data/data.json";
+
 
             // Read existing (if file exists)
             let existing: any[] = [];

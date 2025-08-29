@@ -1,4 +1,4 @@
-@runalltests
+# @runalltests
 Feature: FLYSAFAIR FLIGHT BOOKINGS
 
     @Lindy

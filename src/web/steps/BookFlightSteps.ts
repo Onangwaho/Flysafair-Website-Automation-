@@ -9,8 +9,8 @@ Given(/^user is at home page$/, async function () {
     await new HomePage(this.web).navigateToHomePage();
 });
 
-Given(/^user select trip type "([^"]*)"$/, async function (type) {
-    await new BookFlight(this.web, this.page).selectTripType(type);
+Given(/^user select trip type "([^"]*)"$/, async function (typee) {
+    await new BookFlight(this.web, this.page).selectTripType(typee);
 });
 
 When(/^the users enters the details "([^"]*)", "([^"]*)", "([^"]*)","([^"]*)", "([^"]*)", "([^"]*)", "([^"]*)", "([^"]*)", "([^"]*)", "([^"]*)"$/, async function (origin, destination, depatureDate, ArrivalDate, adult, child, infant, classType, email, tripType) {
@@ -36,21 +36,9 @@ Then(/^clicks button a button "([^"]*)"$/, async function (button) {
 
 
 Then(/^customer clicks "([^"]*)"$/, async function (carHire) {
-    await new BookFlight(this.web, this.page).fnClickNoCarHire(carHire)
+    await new BookFlight(this.web, this.page).fnClickBtnNoThanks();
 
-    // // attached data to cucumber report
-    // const bookingRef = "SGTDH";
-    // const timestamp = new Date().toISOString();
 
-    // // Log to terminal
-    // console.log(`Booking reference: ${bookingRef} at ${timestamp}`);
-
-    // // Attach to Cucumber report
-    // await this.attach(`Booking Reference: ${bookingRef}\nTimestamp: ${timestamp}`, "text/plain");
-
-    // // Or attach structured JSON
-    // await this.attach(JSON.stringify({ bookingRef, timestamp }, null, 2),"application/json"
-    // );
 });
 
 Then(/^booking reference is created and payment is confirmed booking is succesfull$/, async function () {
@@ -60,8 +48,29 @@ Then(/^booking reference is created and payment is confirmed booking is succesfu
 
 
 When(/^customer select payment method "([^"]*)" and pay$/, async function (payType) {
-    await new BookFlight(this.web, this.page).fnPayFlight(payType)
-    // await expect(this.page).toHaveURL('https://test-safair.ezyflight.se/manage/confirmation?confirmationNumber=XZ6PE1&bookingLastName=RRTRT');
+    const bookingRef = await new BookFlight(this.web, this.page).fnPayFlight(payType);
+
+    const timestamp = new Date().toISOString();
+
+    // Log to terminal
+    console.log(`Booking reference: ${bookingRef} at ${timestamp}`);
+
+    // ✅ Attach inline readable text
+    await this.attach(
+        `Booking Reference: ${bookingRef}\nTimestamp: ${timestamp}`,
+        "text/plain"
+    );
+
+    // ✅ Attach structured JSON
+    await this.attach(
+        JSON.stringify({ bookingRef, timestamp }, null, 2),
+        "application/json"
+    );
+
+    // Example assertion if needed
+    // await expect(this.page).toHaveURL(
+    //   `https://test-safair.ezyflight.se/manage/confirmation?confirmationNumber=${bookingRef}&bookingLastName=Automation`
+    // );ait expect(this.page).toHaveURL('https://test-safair.ezyflight.se/manage/confirmation?confirmationNumber=XZ6PE1&bookingLastName=RRTRT');
 });
 
 When(/^a user select number of infants and adults "([^"]*)", "([^"]*)"$/, async function (Adult, infant) {
