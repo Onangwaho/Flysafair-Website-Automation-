@@ -9,30 +9,36 @@ import * as fs from "fs";
 export default class ManageBookings {
     readonly iframe: FrameLocator;
     readonly page: Page;
-    readonly clickbtnNothanks: Locator;
-    readonly bookingRef: Locator;
-    readonly bookingAssertMessage: Locator;
+    readonly clickMyBooking: Locator;
+    readonly txtPnr: Locator;
+    readonly txtLastName: Locator;
+    readonly assertExistingBooking: Locator;
+
 
     constructor(private web: UIActions, page: Page) {
 
         this.page = page;
 
-        this.clickbtnNothanks = this.page.getByRole('button', { name: 'No car, thanks' }).nth(1);
-        this.bookingRef = this.page.locator('//*[@id="app"]/div[2]/div[2]/div/div/div/div[2]/div/div/div[1]/div/div/p/h4/span[2]');
-        this.bookingAssertMessage = this.page.getByRole('heading', { name: 'Payment Complete' }).first();
-
+        this.clickMyBooking = this.page.locator("//button[normalize-space(.)='My Booking']");
+        this.txtPnr = this.page.locator("//input[@placeholder='PNR']");
+        this.txtLastName = this.page.locator("//input[@placeholder='Last name']");
+        this.assertExistingBooking = this.page.getByRole('button', { name: 'buttonName' });
     }
 
-    public async selectTripType(tripTypes: string) {
-        if (tripTypes == "Round-trip") {
-            await this.page.getByLabel('Round-trip').check();
-
-        }
-        else {
-            await this.page.getByLabel('One-way').check();
-        }
+    public async FNclickMyBooking() {
+        await this.clickMyBooking.click();
     }
 
+    public async FNSearchExistingBooking(pnr: string, lastName: string) {
+
+        await this.txtPnr.fill(pnr);
+        await this.txtLastName.fill(lastName);
+    }
+
+    public async FNassertExistingBooking() {
+        // Assertion
+        await expect(this.page.getByText("MANAGE BOOKING", { exact: false })).toBeVisible();
+    }
 }
 
 

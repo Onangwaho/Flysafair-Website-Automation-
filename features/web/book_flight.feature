@@ -11,6 +11,7 @@ Feature: FLYSAFAIR FLIGHT BOOKINGS
         When user select ticket prices and class type "<classType>", "<tripType>"
         Then clicks button a button "Continue"
         When capture passangers details "<noAdults>", "<noChild>", "<infant>"
+
         Then clicks button a button "Continue"
         Then clicks button a button "Continue"
         Then clicks button a button "Skip Seat"
